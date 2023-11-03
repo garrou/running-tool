@@ -1,8 +1,8 @@
 const SECONDS_IN_MIN = 60;
 const SECONDS_IN_HOUR = 360;
 const MINS_IN_HOUR = 60;
-const METER_KM = 1000
-const KM_HOUR = 3600 / METER_KM;
+const METERS_IN_KM = 1000
+const KM_HOUR = 3600 / METERS_IN_KM;
 
 // v = d / t
 // d = v * t
@@ -19,8 +19,8 @@ document.getElementsByName("btnSk")[0].addEventListener("click", () => {
     const hours = skHours.value === "" ? 0 : parseInt(skHours.value);
     const minutes = skMinutes.value === "" ? 0 : parseInt(skMinutes.value);
     const seconds = skSeconds.value === "" ? 0 : parseInt(skSeconds.value);
-    const div = hours * SECONDS_IN_HOUR + minutes * SECONDS_IN_MIN + seconds
-    const speed = meters / (isFinite(div) ? div : 1) * KM_HOUR
+    const div = hours * SECONDS_IN_HOUR + minutes * SECONDS_IN_MIN + seconds;
+    const speed = meters / (isFinite(div) ? div : 1) * KM_HOUR;
 
     skResult.textContent = `${speed.toFixed(2)} km/h`;
 });
@@ -35,13 +35,12 @@ document.getElementsByName("btnTk")[0].addEventListener("click", () => {
     const minutes = tkMinutes.value === "" ? 0 : parseInt(tkMinutes.value);
     const seconds = tkSeconds.value === "" ? 0 : parseInt(tkSeconds.value);
 
-    const km = meters / METER_KM;
+    const km = meters / METERS_IN_KM;
     const s = km * seconds;
     const m = parseInt(km * minutes) + parseInt(s / SECONDS_IN_MIN);
     const h = parseInt(m / SECONDS_IN_HOUR);
-    const time = `${h} h ${m} mins ${parseInt(s % SECONDS_IN_MIN)} s`
 
-    tkResult.textContent = time;
+    tkResult.textContent = `${h} h ${m} mins ${parseInt(s % SECONDS_IN_MIN)} s`;
 });     
 
 document.getElementsByName("btnDk")[0].addEventListener("click", () => {
@@ -51,7 +50,7 @@ document.getElementsByName("btnDk")[0].addEventListener("click", () => {
 
     const meter = dkMeters.value === "" ? 0 : parseInt(dkMeters.value);
     const kmH = kmHeures.value === "" ? 0 : parseFloat(kmHeures.value);
-    const time = meter / METER_KM / kmH;
+    const time = meter / METERS_IN_KM / kmH;
     
     const afp = getAfterFloatingPoint(time);
     const h = parseInt(time);
