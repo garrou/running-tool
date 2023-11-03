@@ -38,9 +38,9 @@ document.getElementsByName("btnTk")[0].addEventListener("click", () => {
     const km = meters / METERS_IN_KM;
     const s = km * seconds;
     const m = parseInt(km * minutes) + parseInt(s / SECONDS_IN_MIN);
-    const h = parseInt(m / SECONDS_IN_HOUR);
+    const h = parseInt(m / MINS_IN_HOUR);
 
-    tkResult.textContent = `${h} h ${m} mins ${parseInt(s % SECONDS_IN_MIN)} s`;
+    tkResult.textContent = `${h} h ${m % SECONDS_IN_MIN} mins ${parseInt(s % SECONDS_IN_MIN)} s`;
 });     
 
 document.getElementsByName("btnDk")[0].addEventListener("click", () => {
