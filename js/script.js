@@ -1,5 +1,5 @@
 const SECONDS_IN_MIN = 60;
-const SECONDS_IN_HOUR = 360;
+const SECONDS_IN_HOUR = 3600;
 const MINS_IN_HOUR = 60;
 const METERS_IN_KM = 1000
 const KM_HOUR = 3600 / METERS_IN_KM;
