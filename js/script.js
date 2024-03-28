@@ -9,32 +9,32 @@ const ERROR_MESSAGE = "Bad values";
 // d = v * t
 // t = d / v
 
-document.getElementsByName("btnSk")[0].addEventListener("click", () => {
-    const skMeters = document.getElementsByName("skMeters")[0];
-    const skHours = document.getElementsByName("skHours")[0];
-    const skMinutes = document.getElementsByName("skMinutes")[0];
-    const skSeconds = document.getElementsByName("skSeconds")[0];
+document.getElementById("btnSk").addEventListener("click", () => {
+    const skMeters = document.getElementById("skMeters");
+    const skHours = document.getElementById("skHours");
+    const skMinutes = document.getElementById("skMinutes");
+    const skSeconds = document.getElementById("skSeconds");
     const skResult = document.getElementById("skResult");
 
-    const meters = new Value(skMeters.value === "" ? 0 : parseInt(skMeters.value), 0, Number.MAX_SAFE_INTEGER);
-    const hours = new Value(skHours.value === "" ? 0 : parseInt(skHours.value), 0, 23);
-    const minutes = new Value(skMinutes.value === "" ? 0 : parseInt(skMinutes.value), 0, 59);
-    const seconds = new Value(skSeconds.value === "" ? 0 : parseInt(skSeconds.value), 0, 59);
-    
+    const meters = new Value(toNum(skMeters.value), 0, Number.MAX_SAFE_INTEGER);
+    const hours = new Value(toNum(skHours.value), 0, Number.MAX_SAFE_INTEGER);
+    const minutes = new Value(toNum(skMinutes.value), 0, 59);
+    const seconds = new Value(toNum(skSeconds.value), 0, 59);
+    console.log(meters, hours, minutes, seconds)
     skResult.textContent = isValidLimits(meters, hours, minutes, seconds)
         ? kilometersPerHours(meters, hours, minutes, seconds)
         : ERROR_MESSAGE;
 });
 
-document.getElementsByName("btnTk")[0].addEventListener("click", () => {
-    const tkMeters = document.getElementsByName("tkMeters")[0];
-    const tkMinutes = document.getElementsByName("tkMinutes")[0];
-    const tkSeconds = document.getElementsByName("tkSeconds")[0];
+document.getElementById("btnTk").addEventListener("click", () => {
+    const tkMeters = document.getElementById("tkMeters");
+    const tkMinutes = document.getElementById("tkMinutes");
+    const tkSeconds = document.getElementById("tkSeconds");
     const tkResult = document.getElementById("tkResult");
 
-    const meters = new Value(tkMeters.value === "" ? 0 : parseInt(tkMeters.value), 0, Number.MAX_SAFE_INTEGER);
-    const minutes = new Value(tkMinutes.value === "" ? 0 : parseInt(tkMinutes.value), 0, 59);
-    const seconds = new Value(tkSeconds.value === "" ? 0 : parseInt(tkSeconds.value), 0, 59);
+    const meters = new Value(toNum(tkMeters.value), 0, Number.MAX_SAFE_INTEGER);
+    const minutes = new Value(toNum(tkMinutes.value), 0, 59);
+    const seconds = new Value(toNum(tkSeconds.value), 0, 59);
     const timeInSecs = convertInSeconds(meters, minutes, seconds);
 
     tkResult.textContent = isValidLimits(meters, minutes, seconds) 
@@ -42,13 +42,13 @@ document.getElementsByName("btnTk")[0].addEventListener("click", () => {
         : ERROR_MESSAGE;
 });     
 
-document.getElementsByName("btnDk")[0].addEventListener("click", () => {
-    const dkMeters = document.getElementsByName("dkMeters")[0];
-    const kmHeures = document.getElementsByName("kmHeures")[0];
+document.getElementById("btnDk").addEventListener("click", () => {
+    const dkMeters = document.getElementById("dkMeters");
+    const kmHeures = document.getElementById("kmHeures");
     const dkResult = document.getElementById("dkResult");
 
-    const meters = new Value(dkMeters.value === "" ? 0 : parseInt(dkMeters.value), 0, Number.MAX_SAFE_INTEGER);
-    const kmH = new Value(kmHeures.value === "" ? 0 : parseFloat(kmHeures.value.replaceAll(",", ".")), 0, Number.MAX_SAFE_INTEGER);
+    const meters = new Value(toNum(dkMeters.value), 0, Number.MAX_SAFE_INTEGER);
+    const kmH = new Value(toNum(kmHeures.value, true), 0, Number.MAX_SAFE_INTEGER);
 
     dkResult.textContent = isValidLimits(meters, kmH) 
         ? timeByDistanceAndSpeed(meters, kmH)
@@ -62,6 +62,16 @@ class Value {
         this.min = min;
         this.max = max;
     }
+}
+
+/**
+ * @param {string} val
+ * @param {boolean} float
+ */
+function toNum(val, float = false) {
+    return val === "" || isNaN(val) 
+        ? 0
+        : float ? parseFloat(val.replaceAll(",", ".")) : parseInt(val);
 }
 
 /**
@@ -114,6 +124,8 @@ function secondsToHMS(seconds) {
 function kilometersPerHours(meters, hours, minutes, seconds) {
     const divide = hours.value * SECONDS_IN_HOUR + minutes.value * SECONDS_IN_MIN + seconds.value;
     const speed = meters.value / (isFinite(divide) ? divide : 1) * KM_HOUR;
+    
+    console.log(divide, speed)
     return `${speed.toFixed(2)} km/h`;
 }
 
