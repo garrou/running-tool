@@ -44,11 +44,11 @@ document.getElementById("btnTk").addEventListener("click", () => {
 
 document.getElementById("btnDk").addEventListener("click", () => {
     const dkMeters = document.getElementById("dkMeters");
-    const kmHeures = document.getElementById("kmHeures");
+    const kmHours = document.getElementById("kmHours");
     const dkResult = document.getElementById("dkResult");
 
     const meters = new Value(toNum(dkMeters.value), 0, Number.MAX_SAFE_INTEGER);
-    const kmH = new Value(toNum(kmHeures.value, true), 0, Number.MAX_SAFE_INTEGER);
+    const kmH = new Value(toNum(kmHours.value, true), 0, Number.MAX_SAFE_INTEGER);
 
     dkResult.textContent = isValidLimits(meters, kmH) 
         ? timeByDistanceAndSpeed(meters, kmH)
