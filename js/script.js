@@ -160,7 +160,7 @@ function timeByDistanceAndSpeed(meters, kmH) {
  * @returns string
  */
 function kilometersAndMiles(meters) {
-    const km = meters.value / 1000;
+    const km = meters.value / METERS_IN_KM;
     const miles = (km * KM_IN_MILE).toFixed(3);
     return `${km} km / ${miles} miles`;
 }
