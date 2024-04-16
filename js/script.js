@@ -3,6 +3,7 @@ const MINS_IN_HOUR = 60;
 const METERS_IN_KM = 1000;
 const SECONDS_IN_HOUR = 3600;
 const KM_HOUR = 3.6;
+const KM_IN_MILE = 0.621371;
 const ERROR_MESSAGE = "Bad values";
 
 // v = d / t
@@ -55,6 +56,18 @@ document.getElementById("btnDk").addEventListener("click", () => {
         : ERROR_MESSAGE;
 });     
 
+document.getElementById("btnMk").addEventListener("click", () => {
+    const mkMeters = document.getElementById("mkMeters");
+    const mkResult = document.getElementById("mkResult");
+
+    const meters = new Value(toNum(mkMeters.value), 0, Number.MAX_SAFE_INTEGER);
+
+    mkResult.textContent = isValidLimits(meters) 
+        ? kilometersAndMiles(meters)
+        : ERROR_MESSAGE;
+});     
+
+
 class Value {
 
     constructor(value, min, max) {
@@ -78,7 +91,7 @@ function toNum(val, float = false) {
  * @param {Value} meters 
  * @param {Value} minutes 
  * @param {Value} seconds 
- * @returns Number
+ * @returns number
  */
 function convertInSeconds(meters, minutes, seconds) {
     return (minutes.value * SECONDS_IN_MIN + seconds.value) / METERS_IN_KM * meters.value;
@@ -93,16 +106,16 @@ function isValidLimits(...values) {
 }
 
 /**
- * @param {Number} n 
- * @returns Number
+ * @param {number} n 
+ * @returns number
  */
 function getAfterFloatingPoint(n) {
     return n - Math.floor(n);
 }
 
 /**
- * @param {Number} seconds
- * @returns String 
+ * @param {number} seconds
+ * @returns string 
  */
 function secondsToHMS(seconds) {
     if (seconds < 0) {
@@ -119,7 +132,7 @@ function secondsToHMS(seconds) {
  * @param {Value} hours 
  * @param {Value} minutes 
  * @param {Value} seconds 
- * @returns String
+ * @returns string
  */
 function kilometersPerHours(meters, hours, minutes, seconds) {
     const divide = hours.value * SECONDS_IN_HOUR + minutes.value * SECONDS_IN_MIN + seconds.value;
@@ -132,7 +145,7 @@ function kilometersPerHours(meters, hours, minutes, seconds) {
 /**
  * @param {Value} meters 
  * @param {Value} kmH 
- * @returns String
+ * @returns string
  */
 function timeByDistanceAndSpeed(meters, kmH) {
     const time = meters.value / METERS_IN_KM / kmH.value;
@@ -140,4 +153,14 @@ function timeByDistanceAndSpeed(meters, kmH) {
     const h = Math.floor(time);
     const m = parseInt(afp * MINS_IN_HOUR);
     return `${h} h ${m} mins`;
+}
+
+/**
+ * @param {Value} meters 
+ * @returns string
+ */
+function kilometersAndMiles(meters) {
+    const km = meters.value / 1000;
+    const miles = (km * KM_IN_MILE).toFixed(3);
+    return `${km} km / ${miles} miles`;
 }
