@@ -10,6 +10,17 @@ const ERROR_MESSAGE = "Bad values";
 // d = v * t
 // t = d / v
 
+document.getElementById("btnMk").addEventListener("click", () => {
+    const mkMeters = document.getElementById("mkMeters");
+    const mkResult = document.getElementById("mkResult");
+
+    const meters = new Value(toNum(mkMeters.value), 0, Number.MAX_SAFE_INTEGER);
+
+    mkResult.textContent = isValidLimits(meters) 
+        ? kilometersAndMiles(meters)
+        : ERROR_MESSAGE;
+});     
+
 document.getElementById("btnSk").addEventListener("click", () => {
     const skMeters = document.getElementById("skMeters");
     const skHours = document.getElementById("skHours");
@@ -21,7 +32,7 @@ document.getElementById("btnSk").addEventListener("click", () => {
     const hours = new Value(toNum(skHours.value), 0, Number.MAX_SAFE_INTEGER);
     const minutes = new Value(toNum(skMinutes.value), 0, 59);
     const seconds = new Value(toNum(skSeconds.value), 0, 59);
-    console.log(meters, hours, minutes, seconds)
+
     skResult.textContent = isValidLimits(meters, hours, minutes, seconds)
         ? kilometersPerHours(meters, hours, minutes, seconds)
         : ERROR_MESSAGE;
@@ -55,18 +66,6 @@ document.getElementById("btnDk").addEventListener("click", () => {
         ? timeByDistanceAndSpeed(meters, kmH)
         : ERROR_MESSAGE;
 });     
-
-document.getElementById("btnMk").addEventListener("click", () => {
-    const mkMeters = document.getElementById("mkMeters");
-    const mkResult = document.getElementById("mkResult");
-
-    const meters = new Value(toNum(mkMeters.value), 0, Number.MAX_SAFE_INTEGER);
-
-    mkResult.textContent = isValidLimits(meters) 
-        ? kilometersAndMiles(meters)
-        : ERROR_MESSAGE;
-});     
-
 
 class Value {
 
@@ -137,9 +136,22 @@ function secondsToHMS(seconds) {
 function kilometersPerHours(meters, hours, minutes, seconds) {
     const divide = hours.value * SECONDS_IN_HOUR + minutes.value * SECONDS_IN_MIN + seconds.value;
     const speed = meters.value / (isFinite(divide) ? divide : 1) * KM_HOUR;
+    const result = speed.toFixed(2);
     
-    console.log(divide, speed)
-    return `${speed.toFixed(2)} km/h`;
+    return `${result} km/h - ${kmhToMinKm(result)}`;
+}
+
+/**
+ * @param {number} kmH 
+ * @returns string
+ */
+function kmhToMinKm(kmH) {
+    const time = MINS_IN_HOUR / kmH;
+    const seconds = Math.ceil(getAfterFloatingPoint(time) * SECONDS_IN_MIN);
+    const secFormat = seconds < 10 ? "0" : "";
+    const min = Math.floor(time);
+    
+    return `${min}:${secFormat}${seconds} /km`;
 }
 
 /**
