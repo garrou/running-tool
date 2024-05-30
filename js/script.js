@@ -34,7 +34,7 @@ document.getElementById("btnSk").addEventListener("click", () => {
     const seconds = new Value(toNum(skSeconds.value), 0, 59);
 
     skResult.textContent = isValidLimits(meters, hours, minutes, seconds)
-        ? kilometersPerHours(meters, hours, minutes, seconds)
+        ? kilometersPerHours(meters.value, hours.value, minutes.value, seconds.value, true)
         : ERROR_MESSAGE;
 });
 
@@ -50,7 +50,7 @@ document.getElementById("btnTk").addEventListener("click", () => {
     const timeInSecs = convertInSeconds(meters, minutes, seconds);
 
     tkResult.textContent = isValidLimits(meters, minutes, seconds) 
-        ? secondsToHMS(timeInSecs) 
+        ? secondsToHMS(meters.value, timeInSecs) 
         : ERROR_MESSAGE;
 });     
 
@@ -93,7 +93,7 @@ function toNum(val, float = false) {
  * @returns number
  */
 function convertInSeconds(meters, minutes, seconds) {
-    return (minutes.value * SECONDS_IN_MIN + seconds.value) / METERS_IN_KM * meters.value;
+    return (minutes.value * SECONDS_IN_MIN + seconds.value) * (meters.value / METERS_IN_KM);
 }
 
 /**
@@ -113,32 +113,35 @@ function getAfterFloatingPoint(n) {
 }
 
 /**
+ * @param {number} meters
  * @param {number} seconds
  * @returns string 
  */
-function secondsToHMS(seconds) {
+function secondsToHMS(meters, seconds) {
     if (seconds < 0) {
         throw new Error("Seconds must be positive");
     }
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${hours} h ${minutes} mins ${remainingSeconds} s`;
+    const hours = Math.floor(seconds / SECONDS_IN_HOUR);
+    const temp = (seconds % SECONDS_IN_HOUR) / MINS_IN_HOUR;
+    const minutes = Math.floor(temp);
+    const remainingSeconds = Math.ceil(getAfterFloatingPoint(temp) * 100);
+    const speed = kilometersPerHours(meters, hours, minutes, remainingSeconds);
+    return `${hours} h ${minutes} mins ${remainingSeconds} s - ${speed}`;
 }
 
 /**
- * @param {Value} meters 
- * @param {Value} hours 
- * @param {Value} minutes 
- * @param {Value} seconds 
+ * @param {number} meters
+ * @param {number} hours 
+ * @param {number} minutes 
+ * @param {number} seconds 
+ * @param {boolean} displayMinKm
  * @returns string
  */
-function kilometersPerHours(meters, hours, minutes, seconds) {
-    const divide = hours.value * SECONDS_IN_HOUR + minutes.value * SECONDS_IN_MIN + seconds.value;
-    const speed = meters.value / (isFinite(divide) ? divide : 1) * KM_HOUR;
-    const result = speed.toFixed(2);
-    
-    return `${result} km/h - ${kmhToMinKm(result)}`;
+function kilometersPerHours(meters, hours, minutes, seconds, displayMinKm = false) {
+    const divide = hours * SECONDS_IN_HOUR + minutes * SECONDS_IN_MIN + seconds;
+    const speed = meters / (isFinite(divide) ? divide : 1) * KM_HOUR;
+    const result = `${speed.toFixed(2)} km/h`;
+    return result + (displayMinKm ? ` - ${kmhToMinKm(speed)}` : ""); 
 }
 
 /**
@@ -147,10 +150,9 @@ function kilometersPerHours(meters, hours, minutes, seconds) {
  */
 function kmhToMinKm(kmH) {
     const time = MINS_IN_HOUR / kmH;
-    const seconds = Math.ceil(getAfterFloatingPoint(time) * SECONDS_IN_MIN);
+    const seconds = Math.floor(getAfterFloatingPoint(time) * SECONDS_IN_MIN);
     const secFormat = seconds < 10 ? "0" : "";
     const min = Math.floor(time);
-    
     return `${min}:${secFormat}${seconds} /km`;
 }
 
@@ -161,10 +163,12 @@ function kmhToMinKm(kmH) {
  */
 function timeByDistanceAndSpeed(meters, kmH) {
     const time = meters.value / METERS_IN_KM / kmH.value;
-    const afp = getAfterFloatingPoint(time);
     const h = Math.floor(time);
-    const m = parseInt(afp * MINS_IN_HOUR);
-    return `${h} h ${m} mins`;
+    const temp = getAfterFloatingPoint(time) * MINS_IN_HOUR;
+    const s = parseInt(getAfterFloatingPoint(temp) * SECONDS_IN_MIN);
+    const m = parseInt(temp);
+    const minKm = kmhToMinKm(kmH.value);
+    return `${h} h ${m} mins ${s} s - ${minKm}`;
 }
 
 /**
