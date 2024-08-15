@@ -10,6 +10,27 @@ const ERROR_MESSAGE = "Bad values";
 // d = v * t
 // t = d / v
 
+document.getElementById("btnTtVma").addEventListener("click", () => {
+    const ttVma = document.getElementById("ttVma");
+    const ttVmaResult = document.getElementById("ttVmaResult");
+
+    const vma = new Value(toNum(ttVma.value), 0, 30);
+
+    if (!isValidLimits(vma)) {
+        const entry = document.createElement('li');
+        entry.appendChild(document.createTextNode(ERROR_MESSAGE));
+        ttVmaResult.appendChild(entry);
+        return;
+    }
+    const results =  theoreticalTimeByVma(vma.value);
+
+    results.forEach((c) => {
+        const entry = document.createElement('li');
+        entry.appendChild(document.createTextNode(c));
+        ttVmaResult.appendChild(entry);
+    });
+});   
+
 document.getElementById("btnMk").addEventListener("click", () => {
     const mkMeters = document.getElementById("mkMeters");
     const mkResult = document.getElementById("mkResult");
@@ -209,4 +230,23 @@ function distanceByTimeAndSpeed(mins, secs, minsKm, secsKm) {
     return distance > METERS_IN_KM 
         ? `${(distance / METERS_IN_KM).toFixed(3)} km` 
         : `${distance} m`;
+}
+
+/**
+ * @param {number} vma 
+ * @returns Array<string>
+ */
+function theoreticalTimeByVma(vma) {
+    const km3 = timeByDistanceAndKmH(3000, vma * 0.95);
+    const km5 = timeByDistanceAndKmH(5000, vma * 0.92);
+    const km10 = timeByDistanceAndKmH(10000, vma * 0.9);
+    const km21 = timeByDistanceAndKmH(21100, vma * 0.85);
+    const km42 = timeByDistanceAndKmH(42195, vma * 0.8);
+    return [
+        `3km : ${km3}`,
+        `5km : ${km5}`,
+        `10km : ${km10}`,
+        `HM : ${km21}`,
+        `M : ${km42}`,
+    ]; 
 }
