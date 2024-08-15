@@ -22,7 +22,8 @@ document.getElementById("btnTtVma").addEventListener("click", () => {
         ttVmaResult.appendChild(entry);
         return;
     }
-    const results =  theoreticalTimeByVma(vma.value);
+    ttVmaResult.replaceChildren()
+    const results = theoreticalTimeByVma(vma.value);
 
     results.forEach((c) => {
         const entry = document.createElement('li');
