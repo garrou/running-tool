@@ -14,7 +14,7 @@ document.getElementById("btnTtVma").addEventListener("click", () => {
     const ttVma = document.getElementById("ttVma");
     const ttVmaResult = document.getElementById("ttVmaResult");
 
-    const vma = new Value(toNum(ttVma.value), 0, 30);
+    const vma = new Value(toNum(ttVma.value, true), 0, 30);
 
     if (!isValidLimits(vma)) {
         const entry = document.createElement('li');
