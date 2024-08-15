@@ -66,6 +66,23 @@ document.getElementById("btnDk").addEventListener("click", () => {
         : ERROR_MESSAGE;
 });     
 
+document.getElementById("btnDtS").addEventListener("click", () => {
+    const tsTimeMins = document.getElementById("tsTimeMins");
+    const tsTimeSecs = document.getElementById("tsTimeSecs");
+    const tsMins = document.getElementById("tsMins");
+    const tsSecs = document.getElementById("tsSecs");
+    const dTsResult = document.getElementById("dTsResult");
+
+    const timeMins = new Value(toNum(tsTimeMins.value), 0, Number.MAX_SAFE_INTEGER);
+    const timeSecs = new Value(toNum(tsTimeSecs.value), 0, 59);
+    const mins = new Value(toNum(tsMins.value), 0, Number.MAX_SAFE_INTEGER);
+    const secs = new Value(toNum(tsSecs.value), 0, 59);
+
+    dTsResult.textContent = isValidLimits(timeMins, timeSecs, mins, secs) 
+        ? distanceByTimeAndSpeed(timeMins.value, timeSecs.value, mins.value, secs.value)
+        : ERROR_MESSAGE;
+});     
+
 class Value {
 
     constructor(value, min, max) {
@@ -175,4 +192,21 @@ function kilometersAndMiles(meters) {
     const km = meters / METERS_IN_KM;
     const miles = (km * KM_IN_MILE).toFixed(3);
     return `${km} km / ${miles} miles`;
+}
+
+/**
+ * @param {number} mins
+ * @param {number} secs 
+ * @param {number} minsKm 
+ * @param {number} secsKm
+ * @returns string
+ */
+function distanceByTimeAndSpeed(mins, secs, minsKm, secsKm) {
+    const timeInSecs = mins * SECONDS_IN_MIN + secs;
+    const kmPerSec = minsKm * SECONDS_IN_MIN + secsKm;
+    const speedMeterBySec = METERS_IN_KM / kmPerSec;
+    const distance = (timeInSecs * speedMeterBySec).toFixed(3);
+    return distance > METERS_IN_KM 
+        ? `${(distance / METERS_IN_KM).toFixed(3)} km` 
+        : `${distance} m`;
 }

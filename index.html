@@ -18,7 +18,7 @@
             <h5 class="card-title">Meters to Km and Miles</h5>
 
             <div class="form-group">
-                <label for="mkMeters">Distance in meters</label>
+                <label for="mkMeters">Distance (meters)</label>
                 <input type="number" id="mkMeters" class="form-control" min="0">
             </div>
             
@@ -33,7 +33,7 @@
             <h5 class="card-title">Km/h by distance and time</h5>
 
             <div class="form-group">
-                <label for="skMeters">Distance in meters</label>
+                <label for="skMeters">Distance (meters)</label>
                 <input type="number" id="skMeters" class="form-control" min="0">
             </div>
 
@@ -65,18 +65,18 @@
             <h5 class="card-title">Time by distance and min/km</h5>
             
             <div class="form-group">
-                <label for="tkMeters">Distance in meters</label>
+                <label for="tkMeters">Distance (meters)</label>
                 <input type="number" id="tkMeters" class="form-control" min="0">
             </div>
 
             <div class="row">
                 <div class="form-group col">
-                    <label for="tkMinutes">Minutes</label>
+                    <label for="tkMinutes">Mins / km</label>
                     <input type="number" id="tkMinutes" class="form-control" min="0">
                 </div>
     
                 <div class="form-group col">
-                    <label for="tkSeconds">Seconds</label>
+                    <label for="tkSeconds">Secs / km</label>
                     <input type="number" id="tkSeconds" class="form-control" min="0" max="59">
                 </div>
             </div>
@@ -93,12 +93,12 @@
 
             <div class="row">
                 <div class="form-group col">
-                    <label for="dkMeters">Distance in meters</label>
+                    <label for="dkMeters">Distance (meters)</label>
                     <input type="number" id="dkMeters" class="form-control" min="0">
                 </div>
     
                 <div class="form-group col">
-                    <label for="kmHours">Km/h</label>
+                    <label for="kmHours">Km / h</label>
                     <input type="number" id="kmHours" class="form-control" min="0">
                 </div>
             </div>
@@ -106,6 +106,40 @@
             <button class="btn btn-primary mt-2" id="btnDk">Compute</button>
 
             <p id="dkResult" class="mt-2"></p>
+        </div>
+    </div>
+
+    <div class="card mt-2">
+        <div class="card-body">
+            <h5 class="card-title">Distance by time and min/km</h5>
+
+            <div class="row">
+                <div class="form-group col">
+                    <label for="tsTimeMins">Minutes</label>
+                    <input type="number" id="tsTimeMins" class="form-control" min="0">
+                </div>
+    
+                <div class="form-group col">
+                    <label for="tsTimeSecs">Seconds</label>
+                    <input type="number" id="tsTimeSecs" class="form-control" min="0" max="59">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col">
+                    <label for="tsMins">Mins / km</label>
+                    <input type="number" id="tsMins" class="form-control" min="0">
+                </div>
+    
+                <div class="form-group col">
+                    <label for="tsSecs">Secs / km</label>
+                    <input type="number" id="tsSecs" class="form-control" min="0" max="59">
+                </div>
+            </div>
+
+            <button class="btn btn-primary mt-2" id="btnDtS">Compute</button>
+
+            <p id="dTsResult" class="mt-2"></p>
         </div>
     </div>
     <script src="js/script.js"></script>
