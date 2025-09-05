@@ -4,6 +4,7 @@ const METERS_IN_KM = 1000;
 const SECONDS_IN_HOUR = 3600;
 const KM_HOUR = 3.6;
 const KM_IN_MILE = 0.621371192;
+const MILE_IN_KM = 1.609344;
 const ERROR_MESSAGE = "Bad values";
 
 // v = d / t
@@ -35,11 +36,13 @@ document.getElementById("btnTtVma").addEventListener("click", () => {
 document.getElementById("btnMk").addEventListener("click", () => {
     const mkMeters = document.getElementById("mkMeters");
     const mkResult = document.getElementById("mkResult");
+    const unitSelector = document.getElementById("unitSelector");
 
-    const meters = new Value(toNum(mkMeters.value), 0, Number.MAX_SAFE_INTEGER);
+    const distance = new Value(toNum(mkMeters.value, true), 0, Number.MAX_SAFE_INTEGER);
+    const unit = unitSelector.value === "1" ? 1 : 2;
 
-    mkResult.textContent = isValidLimits(meters) 
-        ? kilometersAndMiles(meters.value)
+    mkResult.textContent = isValidLimits(distance) 
+        ? (unit === 1 ? metersToMiles(distance.value) : milesToMeters(distance.value))
         : ERROR_MESSAGE;
 });     
 
@@ -210,10 +213,20 @@ function timeByDistanceAndKmH(meters, kmH) {
  * @param {number} meters 
  * @returns string
  */
-function kilometersAndMiles(meters) {
+function metersToMiles(meters) {
     const km = meters / METERS_IN_KM;
     const miles = (km * KM_IN_MILE).toFixed(3);
-    return `${km} km / ${miles} miles`;
+    return `${miles} miles`;
+}
+
+/**
+ * @param {number} miles 
+ * @returns string
+ */
+function milesToMeters(miles) {
+    const km = miles * MILE_IN_KM;
+    const meters = (km * METERS_IN_KM).toFixed(3);
+    return `${meters} meters`;
 }
 
 /**
@@ -240,9 +253,9 @@ function distanceByTimeAndSpeed(mins, secs, minsKm, secsKm) {
 function theoreticalTimeByVma(vma) {
     const km3 = timeByDistanceAndKmH(3000, vma * 0.95);
     const km5 = timeByDistanceAndKmH(5000, vma * 0.92);
-    const km10 = timeByDistanceAndKmH(10000, vma * 0.9);
+    const km10 = timeByDistanceAndKmH(10000, vma * 0.88);
     const km21 = timeByDistanceAndKmH(21100, vma * 0.85);
-    const km42 = timeByDistanceAndKmH(42195, vma * 0.8);
+    const km42 = timeByDistanceAndKmH(42195, vma * 0.75);
     return [
         `3km : ${km3}`,
         `5km : ${km5}`,

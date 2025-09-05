@@ -23,7 +23,7 @@
                     <input type="number" id="ttVma" class="form-control" min="0" max="30">
                 </div>
             </div>
-            
+
             <button class="btn btn-primary mt-2" id="btnTtVma">Compute</button>
 
             <ul id="ttVmaResult" class="mt-2"></ul>
@@ -35,10 +35,19 @@
             <h5 class="card-title">Meters to Km and Miles</h5>
 
             <div class="form-group">
-                <label for="mkMeters">Distance (meters)</label>
-                <input type="number" id="mkMeters" class="form-control" min="0">
+                <label for="mkMeters">Distance</label>
+
+                <div class="row">
+                    <div class="col">
+                        <input type="number" id="mkMeters" class="form-control" min="0">
+                    </div>
+                    <select id="unitSelector" class="form-select col">
+                        <option selected value="1">Meters to miles</option>
+                        <option value="2">Miles to meters</option>
+                    </select>
+                </div>
             </div>
-            
+
             <button class="btn btn-primary mt-2" id="btnMk">Compute</button>
 
             <p id="mkResult" class="mt-2"></p>
@@ -59,18 +68,18 @@
                     <label for="skHours">Hours</label>
                     <input type="number" id="skHours" class="form-control" min="0">
                 </div>
-                
+
                 <div class="form-group col">
                     <label for="skMinutes">Minutes</label>
                     <input type="number" id="skMinutes" min="0" class="form-control" max="59">
                 </div>
-    
+
                 <div class="form-group col">
                     <label for="skSeconds">Seconds</label>
                     <input type="number" id="skSeconds" min="0" class="form-control" max="59">
                 </div>
             </div>
-            
+
             <button class="btn btn-primary mt-2" id="btnSk">Compute</button>
 
             <p id="skResult" class="mt-2"></p>
@@ -80,7 +89,7 @@
     <div class="card mt-2">
         <div class="card-body">
             <h5 class="card-title">Time by distance and min/km</h5>
-            
+
             <div class="form-group">
                 <label for="tkMeters">Distance (meters)</label>
                 <input type="number" id="tkMeters" class="form-control" min="0">
@@ -91,7 +100,7 @@
                     <label for="tkMinutes">Mins / km</label>
                     <input type="number" id="tkMinutes" class="form-control" min="0">
                 </div>
-    
+
                 <div class="form-group col">
                     <label for="tkSeconds">Secs / km</label>
                     <input type="number" id="tkSeconds" class="form-control" min="0" max="59">
@@ -113,7 +122,7 @@
                     <label for="dkMeters">Distance (meters)</label>
                     <input type="number" id="dkMeters" class="form-control" min="0">
                 </div>
-    
+
                 <div class="form-group col">
                     <label for="kmHours">Km / h</label>
                     <input type="number" id="kmHours" class="form-control" min="0">
@@ -135,7 +144,7 @@
                     <label for="tsTimeMins">Minutes</label>
                     <input type="number" id="tsTimeMins" class="form-control" min="0">
                 </div>
-    
+
                 <div class="form-group col">
                     <label for="tsTimeSecs">Seconds</label>
                     <input type="number" id="tsTimeSecs" class="form-control" min="0" max="59">
@@ -147,7 +156,7 @@
                     <label for="tsMins">Mins / km</label>
                     <input type="number" id="tsMins" class="form-control" min="0">
                 </div>
-    
+
                 <div class="form-group col">
                     <label for="tsSecs">Secs / km</label>
                     <input type="number" id="tsSecs" class="form-control" min="0" max="59">
@@ -161,4 +170,5 @@
     </div>
     <script src="js/script.js"></script>
 </body>
+
 </html>
