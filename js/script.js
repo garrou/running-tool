@@ -38,7 +38,7 @@ document.getElementById("btnMk").addEventListener("click", () => {
     const mkResult = document.getElementById("mkResult");
     const unitSelector = document.getElementById("unitSelector");
 
-    const distance = new Value(toNum(mkMeters.value, true), 0, Number.MAX_SAFE_INTEGER);
+    const distance = new Value(toNum(mkMeters.value, true), 0.001, Number.MAX_SAFE_INTEGER);
     const unit = unitSelector.value === "1" ? 1 : 2;
 
     mkResult.textContent = isValidLimits(distance) 
@@ -53,12 +53,14 @@ document.getElementById("btnSk").addEventListener("click", () => {
     const skSeconds = document.getElementById("skSeconds");
     const skResult = document.getElementById("skResult");
 
-    const meters = new Value(toNum(skMeters.value), 0, Number.MAX_SAFE_INTEGER);
+    const meters = new Value(toNum(skMeters.value), 1, Number.MAX_SAFE_INTEGER);
     const hours = new Value(toNum(skHours.value), 0, Number.MAX_SAFE_INTEGER);
     const minutes = new Value(toNum(skMinutes.value), 0, 59);
     const seconds = new Value(toNum(skSeconds.value), 0, 59);
 
-    skResult.textContent = isValidLimits(meters, hours, minutes, seconds)
+    const totalTime = hours.value * SECONDS_IN_HOUR + minutes.value * SECONDS_IN_MIN + seconds.value;
+
+    skResult.textContent = isValidLimits(meters, hours, minutes, seconds) && totalTime > 0
         ? kilometersPerHours(meters.value, hours.value, minutes.value, seconds.value, true)
         : ERROR_MESSAGE;
 });
@@ -69,7 +71,7 @@ document.getElementById("btnTk").addEventListener("click", () => {
     const tkSeconds = document.getElementById("tkSeconds");
     const tkResult = document.getElementById("tkResult");
 
-    const meters = new Value(toNum(tkMeters.value), 0, Number.MAX_SAFE_INTEGER);
+    const meters = new Value(toNum(tkMeters.value), 1, Number.MAX_SAFE_INTEGER);
     const minutes = new Value(toNum(tkMinutes.value), 0, 59);
     const seconds = new Value(toNum(tkSeconds.value), 0, 59);
 
@@ -83,8 +85,8 @@ document.getElementById("btnDk").addEventListener("click", () => {
     const kmHours = document.getElementById("kmHours");
     const dkResult = document.getElementById("dkResult");
 
-    const meters = new Value(toNum(dkMeters.value), 0, Number.MAX_SAFE_INTEGER);
-    const kmH = new Value(toNum(kmHours.value, true), 0, Number.MAX_SAFE_INTEGER);
+    const meters = new Value(toNum(dkMeters.value), 1, Number.MAX_SAFE_INTEGER);
+    const kmH = new Value(toNum(kmHours.value, true), 0.001, Number.MAX_SAFE_INTEGER);
 
     dkResult.textContent = isValidLimits(meters, kmH) 
         ? timeByDistanceAndKmH(meters.value, kmH.value)
@@ -103,7 +105,10 @@ document.getElementById("btnDtS").addEventListener("click", () => {
     const mins = new Value(toNum(tsMins.value), 0, Number.MAX_SAFE_INTEGER);
     const secs = new Value(toNum(tsSecs.value), 0, 59);
 
-    dTsResult.textContent = isValidLimits(timeMins, timeSecs, mins, secs) 
+    const totalTime = timeMins.value * SECONDS_IN_MIN + timeSecs.value;
+    const totalPace = mins.value * SECONDS_IN_MIN + secs.value;
+
+    dTsResult.textContent = isValidLimits(timeMins, timeSecs, mins, secs) && totalTime > 0 && totalPace > 0
         ? distanceByTimeAndSpeed(timeMins.value, timeSecs.value, mins.value, secs.value)
         : ERROR_MESSAGE;
 });     
@@ -255,7 +260,7 @@ function theoreticalTimeByVma(vma) {
     const km5 = timeByDistanceAndKmH(5000, vma * 0.92);
     const km10 = timeByDistanceAndKmH(10000, vma * 0.88);
     const km21 = timeByDistanceAndKmH(21100, vma * 0.85);
-    const km42 = timeByDistanceAndKmH(42195, vma * 0.75);
+    const km42 = timeByDistanceAndKmH(42195, vma * 0.80);
     return [
         `3km : ${km3}`,
         `5km : ${km5}`,
