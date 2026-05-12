@@ -20,10 +20,10 @@ document.getElementById("btnTtVma").addEventListener("click", () => {
     if (!isValidLimits(vma)) {
         const entry = document.createElement('li');
         entry.appendChild(document.createTextNode(ERROR_MESSAGE));
-        ttVmaResult.appendChild(entry);
+        ttVmaResult.replaceChildren(entry);
         return;
     }
-    ttVmaResult.replaceChildren()
+    ttVmaResult.replaceChildren();
     const results = theoreticalTimeByVma(vma.value);
 
     results.forEach((c) => {
