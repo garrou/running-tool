@@ -6,6 +6,11 @@ const MAX_SPLITS_KM = 100;
 const MIN_DISTANCE_KM = 0.001;
 // Riegel gets unreliable when the target is this many times farther/shorter than the reference.
 const RIEGEL_MAX_RATIO = 5;
+// Reference performances the prediction formulas are meaningful for (Cameron even turns
+// negative beyond ~440 km, and the VDOT search clamps outside realistic paces).
+const PRED_KM = [1, 100];
+const PRED_PACE_SEC = [120, 720];
+const PRED_INPUTS = ["pDist", "pH", "pM", "pS"];
 
 const CALC_TIME = ["cH", "cM", "cS"];
 const CALC_PACE = ["cPM", "cPS", "cSpeed"];
@@ -172,14 +177,19 @@ function onCalcInput(target) {
     calc();
 }
 
-// ---------- race prediction (Riegel) ----------
+// ---------- race prediction (Riegel, Cameron, VDOT) ----------
 
 function predict() {
     const distance = num("pDist");
     const time = timeOf(["pH", "pM", "pS"]);
-    const valid = isDistance(distance) && isPositive(time);
-    const index = valid ? C.vdot(distance, time) : NaN;
-    const rows = valid
+    const complete = isDistance(distance) && isPositive(time);
+    const pace = time / distance;
+    const plausible = complete
+        && distance >= PRED_KM[0] && distance <= PRED_KM[1]
+        && pace >= PRED_PACE_SEC[0] && pace <= PRED_PACE_SEC[1];
+
+    const index = plausible ? C.vdot(distance, time) : NaN;
+    const rows = plausible
         ? C.RACES.map(({ id, km }) => [
             raceLabel(id),
             C.formatDuration(C.riegel(distance, time, km)),
@@ -188,8 +198,13 @@ function predict() {
         ])
         : [];
     renderTable($("pResult"), [t("race"), "Riegel", "Cameron", "VDOT"], rows);
-    $("pVdot").textContent = valid ? `VDOT ${fmt(index, 1)}` : "";
-    $("pNote").hidden = !(valid && C.RACES.some(({ km }) => {
+    $("pVdot").textContent = plausible ? `VDOT ${fmt(index, 1)}` : "";
+
+    const message = complete && !plausible ? t("implausible")
+        : hasBadInput(PRED_INPUTS) ? t("invalid") : "";
+    $("pMsg").textContent = message;
+    $("pMsg").hidden = !message;
+    $("pNote").hidden = !(plausible && C.RACES.some(({ km }) => {
         const ratio = km / distance;
         return ratio > RIEGEL_MAX_RATIO || ratio < 1 / RIEGEL_MAX_RATIO;
     }));
@@ -210,13 +225,12 @@ function vmaView() {
 
     const zones = valid
         ? C.vmaZones(vma).map((z) => [
-            z.id === "vma" ? t("vmaZone") : t(z.id),
-            percentRange(z),
+            `${z.id === "vma" ? t("vmaZone") : t(z.id)} (${percentRange(z)})`,
             `${C.formatPace(z.paceFrom)}–${C.formatPace(z.paceTo)}`,
             `${fmt(z.speedFrom, 1)}–${fmt(z.speedTo, 1)}`,
         ])
         : [];
-    renderTable($("vmaZones"), [t("zone"), "% VMA", "min/km", "km/h"], zones);
+    renderTable($("vmaZones"), [`${t("zone")} (% VMA)`, "min/km", "km/h"], zones);
 }
 
 // ---------- heart rate ----------
@@ -224,9 +238,9 @@ function vmaView() {
 function hrView() {
     const maxHr = num("hr");
     const rows = maxHr >= 100 && maxHr <= 230
-        ? C.hrZones(maxHr).map((z) => [t(z.id), percentRange(z), `${z.bpmFrom}–${z.bpmTo} bpm`])
+        ? C.hrZones(maxHr).map((z) => [`${t(z.id)} (${percentRange(z)})`, `${z.bpmFrom}–${z.bpmTo} bpm`])
         : [];
-    renderTable($("hrZones"), [t("zone"), "% max", t("range")], rows);
+    renderTable($("hrZones"), [`${t("zone")} (% max)`, t("range")], rows);
 }
 
 // ---------- converter ----------
@@ -322,7 +336,7 @@ function init() {
     document.querySelectorAll("input[type=text], select").forEach((el) => {
         if (typeof store[el.id] === "string") el.value = store[el.id];
     });
-    const radio = document.querySelector(`input[name="mode"][value="${store.mode}"]`);
+    const radio = [...document.querySelectorAll('input[name="mode"]')].find((r) => r.value === store.mode);
     if (radio) radio.checked = true;
 
     paceSec = readPace();

@@ -5,6 +5,7 @@
     --text: #1d2733;
     --muted: #66727f;
     --border: #d5dbe1;
+    --field: #838f9c;
     --accent: #0d6efd;
     --accent-text: #fff;
     --readonly: #eaf2ff;
@@ -19,6 +20,7 @@
         --text: #e6ebf0;
         --muted: #93a0ad;
         --border: #34414e;
+        --field: #6b7b8c;
         --accent: #5b9bff;
         --accent-text: #0b1218;
         --readonly: #223247;
@@ -34,6 +36,7 @@
     --text: #e6ebf0;
     --muted: #93a0ad;
     --border: #34414e;
+    --field: #6b7b8c;
     --accent: #5b9bff;
     --accent-text: #0b1218;
     --readonly: #223247;
@@ -82,7 +85,7 @@ input[type="text"], select {
     font-size: 1rem;
     color: inherit;
     background: var(--card);
-    border: 1px solid var(--border);
+    border: 1px solid var(--field);
     border-radius: 6px;
 }
 
@@ -103,7 +106,7 @@ legend { font-size: .875rem; padding: 0; }
 .modes { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-bottom: 4px; }
 .modes label { display: inline-flex; gap: 4px; align-items: center; font-size: 1rem; }
 
-.presets { display: flex; gap: 8px; margin-top: 8px; }
+.presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 
 button {
     padding: 6px 14px;
@@ -116,13 +119,15 @@ button {
 }
 
 button:disabled { opacity: .4; cursor: default; }
-button.ghost { border-color: var(--border); color: var(--muted); }
+button.ghost { border-color: var(--field); color: var(--muted); }
 
 .result { font-weight: 600; margin: 12px 0 0; min-height: 1.4em; }
 
-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-variant-numeric: tabular-nums; }
+/* Wide tables scroll inside their card instead of stretching the page. */
+.table-wrap { overflow-x: auto; margin-top: 8px; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 th, td { padding: 4px 6px; white-space: nowrap; text-align: right; border-bottom: 1px solid var(--border); }
-th:first-child, td:first-child { text-align: left; }
+th:first-child, td:first-child { text-align: left; white-space: normal; }
 th { color: var(--muted); font-size: .8rem; font-weight: 600; }
 
 details { margin-top: 12px; }

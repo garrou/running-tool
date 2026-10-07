@@ -4,6 +4,7 @@ const C = (() => {
     const SECONDS_IN_HOUR = 3600;
     const KM_IN_MILE = 1.609344;
     const RIEGEL_EXPONENT = 1.06;
+    const MAX_INPUT = 1e9; // keeps every downstream result finite
 
     const RACES = [
         { id: "3k", km: 3 },
@@ -40,7 +41,8 @@ const C = (() => {
         const s = String(str ?? "").trim();
         // Plain decimals only: no sign, exponent or hex (Number() would accept "0x10", "1e2").
         if (!/^(\d+[.,]?\d*|[.,]\d+)$/.test(s)) return NaN;
-        return Number(s.replace(",", "."));
+        const n = Number(s.replace(",", "."));
+        return n <= MAX_INPUT ? n : NaN;
     }
 
     /** Like parseNum but a blank field counts as 0 (invalid text stays NaN). */
@@ -149,7 +151,8 @@ const C = (() => {
     }
 
     /**
-     * Even-pace splits: one entry per full km plus the remaining distance.
+     * Even-pace splits: one entry per full km plus the remaining distance
+     * (ignored below 0.5 m, which would show the same label as the last full km).
      * @returns {{km: number, split: number, total: number}[]}
      */
     function splits(distanceKm, secPerKm) {
@@ -159,7 +162,7 @@ const C = (() => {
             rows.push({ km: i, split: secPerKm, total: i * secPerKm });
         }
         const rest = distanceKm - full;
-        if (rest > 1e-6) {
+        if (rest >= 0.0005) {
             rows.push({ km: distanceKm, split: rest * secPerKm, total: distanceKm * secPerKm });
         }
         return rows;

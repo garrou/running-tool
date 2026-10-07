@@ -67,13 +67,15 @@
             <p id="cSummary" class="result" aria-live="polite"></p>
 
             <details id="cSplitsBox" hidden>
-                <summary data-i18n="splitsTitle">Splits at even pace</summary>
-                <table id="cSplits"></table>
+                <summary id="splitsH" data-i18n="splitsTitle">Splits at even pace</summary>
+                <div class="table-wrap">
+                    <table id="cSplits" aria-labelledby="splitsH"></table>
+                </div>
             </details>
         </section>
 
         <section class="card" id="pred">
-            <h2 data-i18n="predTitle">Race prediction by formula</h2>
+            <h2 id="predH" data-i18n="predTitle">Race prediction by formula</h2>
             <p class="help" data-i18n="predHelp">Enter a recent performance to estimate other distances.</p>
 
             <label for="pDist" data-i18n="distance">Distance (km)</label>
@@ -95,7 +97,10 @@
                 </div>
             </fieldset>
 
-            <table id="pResult"></table>
+            <div class="table-wrap">
+                <table id="pResult" aria-labelledby="predH"></table>
+            </div>
+            <p id="pMsg" class="help" aria-live="polite" hidden></p>
             <p id="pVdot" class="result"></p>
             <p id="pNote" class="help" data-i18n="riegelNote" hidden>Predictions far from the reference distance are less reliable.</p>
 
@@ -113,21 +118,27 @@
             <label for="vma" data-i18n="vmaLabel">VMA (km/h)</label>
             <input type="text" inputmode="decimal" id="vma" autocomplete="off">
 
-            <h3 data-i18n="vmaRaces">Theoretical race times</h3>
-            <table id="vmaRaces"></table>
+            <h3 id="vmaRacesH" data-i18n="vmaRaces">Theoretical race times</h3>
+            <div class="table-wrap">
+                <table id="vmaRaces" aria-labelledby="vmaRacesH"></table>
+            </div>
 
-            <h3 data-i18n="vmaZones">Training zones</h3>
-            <table id="vmaZones"></table>
+            <h3 id="vmaZonesH" data-i18n="vmaZones">Training zones</h3>
+            <div class="table-wrap">
+                <table id="vmaZones" aria-labelledby="vmaZonesH"></table>
+            </div>
             <p class="help" data-i18n="indicative">Indicative values only.</p>
         </section>
 
         <section class="card" id="hrCard">
-            <h2 data-i18n="hrTitle">Heart rate zones</h2>
+            <h2 id="hrH" data-i18n="hrTitle">Heart rate zones</h2>
 
             <label for="hr" data-i18n="hrLabel">Max heart rate (bpm)</label>
             <input type="text" inputmode="numeric" id="hr" autocomplete="off">
 
-            <table id="hrZones"></table>
+            <div class="table-wrap">
+                <table id="hrZones" aria-labelledby="hrH"></table>
+            </div>
         </section>
 
         <section class="card" id="conv">
@@ -139,7 +150,7 @@
                     <input type="text" inputmode="decimal" id="convValue" autocomplete="off">
                 </div>
                 <div class="col">
-                    <label for="convUnit">&nbsp;</label>
+                    <label for="convUnit" data-i18n="unit">Unit</label>
                     <select id="convUnit">
                         <option value="km">km</option>
                         <option value="m">m</option>

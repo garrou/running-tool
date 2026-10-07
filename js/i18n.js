@@ -20,7 +20,6 @@ const I18n = (() => {
             totalCol: "Total",
             predTitle: "Race prediction by formula",
             predHelp: "Enter a recent performance to estimate other distances.",
-            recentRace: "Recent performance",
             vmaTitle: "VMA (MAS)",
             vmaLabel: "VMA (km/h)",
             vmaRaces: "Theoretical race times",
@@ -48,6 +47,8 @@ const I18n = (() => {
             toLight: "Switch to light theme",
             toDark: "Switch to dark theme",
             riegelNote: "Predictions far from the reference distance are less reliable.",
+            implausible: "Enter a realistic performance (1–100 km, 2:00–12:00 /km).",
+            unit: "Unit",
             aboutFormulas: "About the formulas",
             vdotDesc: "Performance index from the oxygen cost of the speed and the share of VO₂max sustainable for that duration; the same VDOT is assumed on every distance.",
         },
@@ -71,7 +72,6 @@ const I18n = (() => {
             totalCol: "Total",
             predTitle: "Prédiction de temps par formule",
             predHelp: "Saisissez une performance récente pour estimer d'autres distances.",
-            recentRace: "Performance récente",
             vmaTitle: "VMA",
             vmaLabel: "VMA (km/h)",
             vmaRaces: "Temps théoriques",
@@ -99,6 +99,8 @@ const I18n = (() => {
             toLight: "Passer au thème clair",
             toDark: "Passer au thème sombre",
             riegelNote: "Les prédictions très éloignées de la distance de référence sont moins fiables.",
+            implausible: "Saisissez une performance réaliste (1 à 100 km, 2:00 à 12:00 /km).",
+            unit: "Unité",
             aboutFormulas: "À propos des formules",
             vdotDesc: "Indice de performance calculé à partir du coût en oxygène de la vitesse et de la part de VO₂max tenable pour cette durée ; le même VDOT est supposé sur toutes les distances.",
         },
@@ -115,7 +117,7 @@ const I18n = (() => {
     /** Picks the stored language, else the browser's, and applies it to the DOM. */
     function initLang(stored) {
         const browser = (navigator.language || "en").slice(0, 2);
-        const known = (code) => Object.hasOwn(DICT, code);
+        const known = (code) => Object.prototype.hasOwnProperty.call(DICT, code);
         setLang(known(stored) ? stored : known(browser) ? browser : "en");
     }
 
