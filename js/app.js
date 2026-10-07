@@ -262,10 +262,30 @@ document.addEventListener("click", (e) => {
     $(preset.dataset.target).dispatchEvent(new Event("input", { bubbles: true }));
 });
 
+const prefersDark = matchMedia("(prefers-color-scheme: dark)");
+const currentTheme = () =>
+    document.documentElement.dataset.theme || (prefersDark.matches ? "dark" : "light");
+
+function showTheme() {
+    const dark = currentTheme() === "dark";
+    $("themeBtn").textContent = dark ? "☀" : "☾";
+    $("themeBtn").setAttribute("aria-label", t(dark ? "toLight" : "toDark"));
+}
+
+prefersDark.addEventListener("change", showTheme);
+
+$("themeBtn").addEventListener("click", () => {
+    const theme = currentTheme() === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = theme;
+    saveStore({ theme });
+    showTheme();
+});
+
 $("langBtn").addEventListener("click", () => {
     const lang = toggleLang();
     $("langBtn").textContent = lang === "en" ? "FR" : "EN";
     saveStore({ lang });
+    showTheme();
     refreshAll();
 });
 
@@ -273,6 +293,11 @@ function init() {
     const store = loadStore();
     initLang(store.lang);
     $("langBtn").textContent = getLang() === "en" ? "FR" : "EN";
+
+    if (store.theme === "light" || store.theme === "dark") {
+        document.documentElement.dataset.theme = store.theme;
+    }
+    showTheme();
 
     document.querySelectorAll("input[type=text], select").forEach((el) => {
         if (typeof store[el.id] === "string") el.value = store[el.id];

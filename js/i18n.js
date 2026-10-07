@@ -45,6 +45,8 @@ const I18n = (() => {
             z4: "Z4 Hard",
             z5: "Z5 Maximum",
             indicative: "Indicative values only.",
+            toLight: "Switch to light theme",
+            toDark: "Switch to dark theme",
         },
         fr: {
             appTitle: "Outil de course",
@@ -91,6 +93,8 @@ const I18n = (() => {
             z4: "Z4 Difficile",
             z5: "Z5 Maximum",
             indicative: "Valeurs indicatives uniquement.",
+            toLight: "Passer au thème clair",
+            toDark: "Passer au thème sombre",
         },
     };
 
