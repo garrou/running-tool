@@ -4,171 +4,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="img/logo.png" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <meta name="theme-color" content="#0d6efd">
+    <link rel="icon" href="img/logo.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
     <title>Running tool</title>
 </head>
 
-<body class="container">
-    <h1>Running tool</h1>
+<body>
+    <header>
+        <h1 data-i18n="appTitle">Running tool</h1>
+        <button type="button" id="langBtn" class="ghost" aria-label="Language">FR</button>
+    </header>
 
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Theoretical time with VMA</h5>
+    <main>
+        <section class="card" id="calc">
+            <h2 data-i18n="calcTitle">Time, distance &amp; pace</h2>
+            <p class="help" data-i18n="calcHelp">Choose what to compute and fill in the other fields.</p>
 
-            <div class="row">
-                <div class="form-group col">
-                    <label for="ttVma">VMA</label>
-                    <input type="number" id="ttVma" class="form-control" min="1" max="30">
+            <div class="modes" role="radiogroup">
+                <label><input type="radio" name="mode" value="time" checked> <span data-i18n="modeTime">Time</span></label>
+                <label><input type="radio" name="mode" value="distance"> <span data-i18n="modeDistance">Distance</span></label>
+                <label><input type="radio" name="mode" value="pace"> <span data-i18n="modePace">Pace / speed</span></label>
+            </div>
+
+            <label for="cDist" data-i18n="distance">Distance (km)</label>
+            <input type="text" inputmode="decimal" id="cDist" autocomplete="off">
+            <div class="presets">
+                <button type="button" data-km="5" data-target="cDist">5K</button>
+                <button type="button" data-km="10" data-target="cDist">10K</button>
+                <button type="button" data-km="21.0975" data-target="cDist">HM</button>
+                <button type="button" data-km="42.195" data-target="cDist">M</button>
+            </div>
+
+            <fieldset>
+                <legend data-i18n="time">Time</legend>
+                <div class="row">
+                    <label><span data-i18n="hours">h</span><input type="text" inputmode="decimal" id="cH" autocomplete="off"></label>
+                    <label><span data-i18n="minutes">min</span><input type="text" inputmode="decimal" id="cM" autocomplete="off"></label>
+                    <label><span data-i18n="seconds">s</span><input type="text" inputmode="decimal" id="cS" autocomplete="off"></label>
+                </div>
+            </fieldset>
+
+            <div class="row bottom">
+                <fieldset class="col">
+                    <legend data-i18n="pace">Pace (min/km)</legend>
+                    <div class="row">
+                        <label><span data-i18n="minutes">min</span><input type="text" inputmode="decimal" id="cPM" autocomplete="off"></label>
+                        <label><span data-i18n="seconds">s</span><input type="text" inputmode="decimal" id="cPS" autocomplete="off"></label>
+                    </div>
+                </fieldset>
+                <div class="col">
+                    <label for="cSpeed" data-i18n="speed">Speed (km/h)</label>
+                    <input type="text" inputmode="decimal" id="cSpeed" autocomplete="off">
                 </div>
             </div>
 
-            <button class="btn btn-primary mt-2" id="btnTtVma">Compute</button>
+            <p id="cSummary" class="result" aria-live="polite"></p>
 
-            <ul id="ttVmaResult" class="mt-2"></ul>
-        </div>
-    </div>
+            <details id="cSplitsBox" hidden>
+                <summary data-i18n="splitsTitle">Splits at even pace</summary>
+                <table id="cSplits"></table>
+            </details>
+        </section>
 
-    <div class="card mt-2">
-        <div class="card-body">
-            <h5 class="card-title">Meters to Km and Miles</h5>
+        <section class="card" id="pred">
+            <h2 data-i18n="predTitle">Race prediction (Riegel)</h2>
+            <p class="help" data-i18n="predHelp">Enter a recent performance to estimate other distances.</p>
 
-            <div class="form-group">
-                <label for="mkMeters">Distance</label>
+            <label for="pDist" data-i18n="distance">Distance (km)</label>
+            <input type="text" inputmode="decimal" id="pDist" autocomplete="off">
+            <div class="presets">
+                <button type="button" data-km="3" data-target="pDist">3K</button>
+                <button type="button" data-km="5" data-target="pDist">5K</button>
+                <button type="button" data-km="10" data-target="pDist">10K</button>
+                <button type="button" data-km="21.0975" data-target="pDist">HM</button>
+                <button type="button" data-km="42.195" data-target="pDist">M</button>
+            </div>
 
+            <fieldset>
+                <legend data-i18n="time">Time</legend>
                 <div class="row">
-                    <div class="col">
-                        <input type="number" id="mkMeters" class="form-control" min="0">
-                    </div>
-                    <select id="unitSelector" class="form-select col">
-                        <option selected value="1">Meters to miles</option>
-                        <option value="2">Miles to meters</option>
+                    <label><span data-i18n="hours">h</span><input type="text" inputmode="decimal" id="pH" autocomplete="off"></label>
+                    <label><span data-i18n="minutes">min</span><input type="text" inputmode="decimal" id="pM" autocomplete="off"></label>
+                    <label><span data-i18n="seconds">s</span><input type="text" inputmode="decimal" id="pS" autocomplete="off"></label>
+                </div>
+            </fieldset>
+
+            <table id="pResult" aria-live="polite"></table>
+        </section>
+
+        <section class="card" id="vmaCard">
+            <h2 data-i18n="vmaTitle">VMA</h2>
+
+            <label for="vma" data-i18n="vmaLabel">VMA (km/h)</label>
+            <input type="text" inputmode="decimal" id="vma" autocomplete="off">
+
+            <h3 data-i18n="vmaRaces">Theoretical race times</h3>
+            <table id="vmaRaces" aria-live="polite"></table>
+
+            <h3 data-i18n="vmaZones">Training zones</h3>
+            <table id="vmaZones" aria-live="polite"></table>
+            <p class="help" data-i18n="indicative">Indicative values only.</p>
+        </section>
+
+        <section class="card" id="hrCard">
+            <h2 data-i18n="hrTitle">Heart rate zones</h2>
+
+            <label for="hr" data-i18n="hrLabel">Max heart rate (bpm)</label>
+            <input type="text" inputmode="numeric" id="hr" autocomplete="off">
+
+            <table id="hrZones" aria-live="polite"></table>
+        </section>
+
+        <section class="card" id="conv">
+            <h2 data-i18n="convTitle">Distance converter</h2>
+
+            <div class="row">
+                <div class="col">
+                    <label for="convValue" data-i18n="value">Value</label>
+                    <input type="text" inputmode="decimal" id="convValue" autocomplete="off">
+                </div>
+                <div class="col">
+                    <label for="convUnit">&nbsp;</label>
+                    <select id="convUnit">
+                        <option value="km">km</option>
+                        <option value="m">m</option>
+                        <option value="mi">miles</option>
                     </select>
                 </div>
             </div>
 
-            <button class="btn btn-primary mt-2" id="btnMk">Compute</button>
+            <p id="convResult" class="result" aria-live="polite"></p>
+        </section>
+    </main>
 
-            <p id="mkResult" class="mt-2"></p>
-        </div>
-    </div>
-
-    <div class="card mt-2">
-        <div class="card-body">
-            <h5 class="card-title">Km/h by distance and time</h5>
-
-            <div class="form-group">
-                <label for="skMeters">Distance (meters)</label>
-                <input type="number" id="skMeters" class="form-control" min="0">
-            </div>
-
-            <div class="row">
-                <div class="form-group col">
-                    <label for="skHours">Hours</label>
-                    <input type="number" id="skHours" class="form-control" min="0">
-                </div>
-
-                <div class="form-group col">
-                    <label for="skMinutes">Minutes</label>
-                    <input type="number" id="skMinutes" min="0" class="form-control" max="59">
-                </div>
-
-                <div class="form-group col">
-                    <label for="skSeconds">Seconds</label>
-                    <input type="number" id="skSeconds" min="0" class="form-control" max="59">
-                </div>
-            </div>
-
-            <button class="btn btn-primary mt-2" id="btnSk">Compute</button>
-
-            <p id="skResult" class="mt-2"></p>
-        </div>
-    </div>
-
-    <div class="card mt-2">
-        <div class="card-body">
-            <h5 class="card-title">Time by distance and min/km</h5>
-
-            <div class="form-group">
-                <label for="tkMeters">Distance (meters)</label>
-                <input type="number" id="tkMeters" class="form-control" min="0">
-            </div>
-
-            <div class="row">
-                <div class="form-group col">
-                    <label for="tkMinutes">Mins / km</label>
-                    <input type="number" id="tkMinutes" class="form-control" min="0" max="59">
-                </div>
-
-                <div class="form-group col">
-                    <label for="tkSeconds">Secs / km</label>
-                    <input type="number" id="tkSeconds" class="form-control" min="0" max="59">
-                </div>
-            </div>
-
-            <button class="btn btn-primary mt-2" id="btnTk">Compute</button>
-
-            <p id="tkResult" class="mt-2"></p>
-        </div>
-    </div>
-
-    <div class="card mt-2">
-        <div class="card-body">
-            <h5 class="card-title">Time by distance and km/h</h5>
-
-            <div class="row">
-                <div class="form-group col">
-                    <label for="dkMeters">Distance (meters)</label>
-                    <input type="number" id="dkMeters" class="form-control" min="0">
-                </div>
-
-                <div class="form-group col">
-                    <label for="kmHours">Km / h</label>
-                    <input type="number" id="kmHours" class="form-control" min="0">
-                </div>
-            </div>
-
-            <button class="btn btn-primary mt-2" id="btnDk">Compute</button>
-
-            <p id="dkResult" class="mt-2"></p>
-        </div>
-    </div>
-
-    <div class="card mt-2">
-        <div class="card-body">
-            <h5 class="card-title">Distance by time and min/km</h5>
-
-            <div class="row">
-                <div class="form-group col">
-                    <label for="tsTimeMins">Minutes</label>
-                    <input type="number" id="tsTimeMins" class="form-control" min="0">
-                </div>
-
-                <div class="form-group col">
-                    <label for="tsTimeSecs">Seconds</label>
-                    <input type="number" id="tsTimeSecs" class="form-control" min="0" max="59">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group col">
-                    <label for="tsMins">Mins / km</label>
-                    <input type="number" id="tsMins" class="form-control" min="0">
-                </div>
-
-                <div class="form-group col">
-                    <label for="tsSecs">Secs / km</label>
-                    <input type="number" id="tsSecs" class="form-control" min="0" max="59">
-                </div>
-            </div>
-
-            <button class="btn btn-primary mt-2" id="btnDtS">Compute</button>
-
-            <p id="dTsResult" class="mt-2"></p>
-        </div>
-    </div>
-    <script src="js/script.js"></script>
+    <script src="js/calc.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>
