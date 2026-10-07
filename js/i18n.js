@@ -47,6 +47,7 @@ const I18n = (() => {
             indicative: "Indicative values only.",
             toLight: "Switch to light theme",
             toDark: "Switch to dark theme",
+            riegelNote: "Predictions far from the reference distance are less reliable.",
         },
         fr: {
             appTitle: "Outil de course",
@@ -95,6 +96,7 @@ const I18n = (() => {
             indicative: "Valeurs indicatives uniquement.",
             toLight: "Passer au thème clair",
             toDark: "Passer au thème sombre",
+            riegelNote: "Les prédictions très éloignées de la distance de référence sont moins fiables.",
         },
     };
 
@@ -109,7 +111,8 @@ const I18n = (() => {
     /** Picks the stored language, else the browser's, and applies it to the DOM. */
     function initLang(stored) {
         const browser = (navigator.language || "en").slice(0, 2);
-        setLang(stored in DICT ? stored : browser in DICT ? browser : "en");
+        const known = (code) => Object.hasOwn(DICT, code);
+        setLang(known(stored) ? stored : known(browser) ? browser : "en");
     }
 
     function toggleLang() {

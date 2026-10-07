@@ -24,9 +24,9 @@
     <main>
         <section class="card" id="calc">
             <h2 data-i18n="calcTitle">Time, distance &amp; pace</h2>
-            <p class="help" data-i18n="calcHelp">Choose what to compute and fill in the other fields.</p>
+            <p class="help" id="calcHelp" data-i18n="calcHelp">Choose what to compute and fill in the other fields.</p>
 
-            <div class="modes" role="radiogroup">
+            <div class="modes" role="radiogroup" aria-labelledby="calcHelp">
                 <label><input type="radio" name="mode" value="time" checked> <span data-i18n="modeTime">Time</span></label>
                 <label><input type="radio" name="mode" value="distance"> <span data-i18n="modeDistance">Distance</span></label>
                 <label><input type="radio" name="mode" value="pace"> <span data-i18n="modePace">Pace / speed</span></label>
@@ -95,7 +95,8 @@
                 </div>
             </fieldset>
 
-            <table id="pResult" aria-live="polite"></table>
+            <table id="pResult"></table>
+            <p id="pNote" class="help" data-i18n="riegelNote" hidden>Predictions far from the reference distance are less reliable.</p>
         </section>
 
         <section class="card" id="vmaCard">
@@ -105,10 +106,10 @@
             <input type="text" inputmode="decimal" id="vma" autocomplete="off">
 
             <h3 data-i18n="vmaRaces">Theoretical race times</h3>
-            <table id="vmaRaces" aria-live="polite"></table>
+            <table id="vmaRaces"></table>
 
             <h3 data-i18n="vmaZones">Training zones</h3>
-            <table id="vmaZones" aria-live="polite"></table>
+            <table id="vmaZones"></table>
             <p class="help" data-i18n="indicative">Indicative values only.</p>
         </section>
 
@@ -118,7 +119,7 @@
             <label for="hr" data-i18n="hrLabel">Max heart rate (bpm)</label>
             <input type="text" inputmode="numeric" id="hr" autocomplete="off">
 
-            <table id="hrZones" aria-live="polite"></table>
+            <table id="hrZones"></table>
         </section>
 
         <section class="card" id="conv">

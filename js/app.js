@@ -3,6 +3,9 @@ const { t, getLang, initLang, toggleLang } = I18n;
 const $ = (id) => document.getElementById(id);
 const STORE_KEY = "running-tool";
 const MAX_SPLITS_KM = 100;
+const MIN_DISTANCE_KM = 0.001;
+// Riegel gets unreliable when the target is this many times farther/shorter than the reference.
+const RIEGEL_MAX_RATIO = 5;
 
 const CALC_TIME = ["cH", "cM", "cS"];
 const CALC_PACE = ["cPM", "cPS", "cSpeed"];
@@ -40,6 +43,7 @@ const fmt = (n, max = 2) =>
     n.toLocaleString(getLang(), { maximumFractionDigits: max, useGrouping: false });
 
 const isPositive = (n) => Number.isFinite(n) && n > 0;
+const isDistance = (n) => Number.isFinite(n) && n >= MIN_DISTANCE_KM;
 const num = (id) => C.parseNum($(id).value);
 const timeOf = (ids) => C.toSeconds(...ids.map((id) => C.parseNumOrZero($(id).value)));
 const clear = (ids) => ids.forEach((id) => ($(id).value = ""));
@@ -126,20 +130,20 @@ function calc() {
     let pace = paceSec;
 
     if (m === "time") {
-        time = isPositive(distance) && isPositive(pace) ? C.timeFor(distance, pace) : NaN;
+        time = isDistance(distance) && isPositive(pace) ? C.timeFor(distance, pace) : NaN;
         isPositive(time) ? setTime(CALC_TIME, time) : clear(CALC_TIME);
     } else if (m === "distance") {
         distance = isPositive(time) && isPositive(pace) ? C.distanceFor(time, pace) : NaN;
-        $("cDist").value = isPositive(distance) ? fmt(distance, 3) : "";
+        $("cDist").value = isDistance(distance) ? fmt(distance, 3) : "";
     } else {
-        pace = isPositive(distance) && isPositive(time) ? C.paceFor(distance, time) : NaN;
+        pace = isDistance(distance) && isPositive(time) ? C.paceFor(distance, time) : NaN;
         paceSec = pace;
         setPaceFields(pace);
         setSpeedField(pace);
     }
 
     const summary = $("cSummary");
-    if (isPositive(distance) && isPositive(time) && isPositive(pace)) {
+    if (isDistance(distance) && isPositive(time) && isPositive(pace)) {
         summary.textContent = [
             `${fmt(distance, 3)} km`,
             C.formatDuration(time),
@@ -173,13 +177,18 @@ function onCalcInput(target) {
 function predict() {
     const distance = num("pDist");
     const time = timeOf(["pH", "pM", "pS"]);
-    const rows = isPositive(distance) && isPositive(time)
+    const valid = isDistance(distance) && isPositive(time);
+    const rows = valid
         ? C.RACES.map(({ id, km }) => {
             const predicted = C.riegel(distance, time, km);
             return [raceLabel(id), C.formatDuration(predicted), C.formatPace(predicted / km)];
         })
         : [];
     renderTable($("pResult"), [t("race"), t("time"), "min/km"], rows);
+    $("pNote").hidden = !(valid && C.RACES.some(({ km }) => {
+        const ratio = km / distance;
+        return ratio > RIEGEL_MAX_RATIO || ratio < 1 / RIEGEL_MAX_RATIO;
+    }));
 }
 
 // ---------- VMA ----------
@@ -239,20 +248,27 @@ function convert() {
 
 // ---------- wiring ----------
 
-const VIEWS = { calc: () => calc(), pred: predict, vmaCard: vmaView, hrCard: hrView, conv: convert };
+const VIEWS = { calc, pred: predict, vmaCard: vmaView, hrCard: hrView, conv: convert };
 
 function refreshAll() {
     Object.values(VIEWS).forEach((view) => view());
 }
 
-document.addEventListener("input", (e) => {
-    const { target } = e;
-    if (target.name === "mode") saveStore({ mode: target.value });
-    else if (target.id) saveStore({ [target.id]: target.value });
+// Saves every field of the card, computed outputs included, so a reload restores what was shown.
+function saveCard(card) {
+    const values = {};
+    card.querySelectorAll("input[type=text], select").forEach((el) => (values[el.id] = el.value));
+    saveStore(values);
+}
 
+document.addEventListener("input", ({ target }) => {
     const card = target.closest("section");
-    if (card?.id === "calc") onCalcInput(target);
-    else if (card) VIEWS[card.id]();
+    if (!card) return;
+    if (target.name === "mode") saveStore({ mode: target.value });
+
+    if (card.id === "calc") onCalcInput(target);
+    else VIEWS[card.id]();
+    saveCard(card);
 });
 
 document.addEventListener("click", (e) => {

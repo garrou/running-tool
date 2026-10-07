@@ -1,4 +1,3 @@
-// Pure calculation helpers: no DOM, no side effects (easy to test with node).
 const C = (() => {
 
     const SECONDS_IN_MIN = 60;
@@ -33,15 +32,15 @@ const C = (() => {
     ];
 
     /**
-     * Parses a user-typed number, accepting "," as decimal separator.
+     * Parses a user-typed non-negative number, accepting "," as decimal separator.
      * @param {string} str
      * @returns {number} NaN when blank or invalid
      */
     function parseNum(str) {
-        const s = String(str ?? "").trim().replace(",", ".");
-        if (s === "") return NaN;
-        const n = Number(s);
-        return Number.isFinite(n) ? n : NaN;
+        const s = String(str ?? "").trim();
+        // Plain decimals only: no sign, exponent or hex (Number() would accept "0x10", "1e2").
+        if (!/^(\d+[.,]?\d*|[.,]\d+)$/.test(s)) return NaN;
+        return Number(s.replace(",", "."));
     }
 
     /** Like parseNum but a blank field counts as 0 (invalid text stays NaN). */

@@ -7,4 +7,5 @@ Small vanilla-JS running calculator (no build, no dependencies).
 - VMA: theoretical race times and training zones
 - Heart rate zones
 - Distance converter (km / m / miles)
-- FR / EN, dark mode, remembers your inputs, installable offline (PWA)
+- FR / EN, automatic or manual light / dark theme, remembers your inputs
+- Can be added to the home screen (web app manifest; no offline mode)
