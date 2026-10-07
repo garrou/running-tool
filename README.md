@@ -3,7 +3,7 @@
 Small vanilla-JS running calculator (no build, no dependencies).
 
 - Time / distance / pace calculator (live, with even-pace splits)
-- Race time prediction (Riegel)
+- Race time prediction compared by formula (Riegel, Cameron, VDOT)
 - VMA: theoretical race times and training zones
 - Heart rate zones
 - Distance converter (km / m / miles)

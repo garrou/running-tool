@@ -178,13 +178,17 @@ function predict() {
     const distance = num("pDist");
     const time = timeOf(["pH", "pM", "pS"]);
     const valid = isDistance(distance) && isPositive(time);
+    const index = valid ? C.vdot(distance, time) : NaN;
     const rows = valid
-        ? C.RACES.map(({ id, km }) => {
-            const predicted = C.riegel(distance, time, km);
-            return [raceLabel(id), C.formatDuration(predicted), C.formatPace(predicted / km)];
-        })
+        ? C.RACES.map(({ id, km }) => [
+            raceLabel(id),
+            C.formatDuration(C.riegel(distance, time, km)),
+            C.formatDuration(C.cameron(distance, time, km)),
+            C.formatDuration(C.timeAtVdot(index, km)),
+        ])
         : [];
-    renderTable($("pResult"), [t("race"), t("time"), "min/km"], rows);
+    renderTable($("pResult"), [t("race"), "Riegel", "Cameron", "VDOT"], rows);
+    $("pVdot").textContent = valid ? `VDOT ${fmt(index, 1)}` : "";
     $("pNote").hidden = !(valid && C.RACES.some(({ km }) => {
         const ratio = km / distance;
         return ratio > RIEGEL_MAX_RATIO || ratio < 1 / RIEGEL_MAX_RATIO;

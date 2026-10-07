@@ -18,7 +18,7 @@ const I18n = (() => {
             kmCol: "Km",
             splitCol: "Split",
             totalCol: "Total",
-            predTitle: "Race prediction (Riegel)",
+            predTitle: "Race prediction by formula",
             predHelp: "Enter a recent performance to estimate other distances.",
             recentRace: "Recent performance",
             vmaTitle: "VMA (MAS)",
@@ -48,6 +48,8 @@ const I18n = (() => {
             toLight: "Switch to light theme",
             toDark: "Switch to dark theme",
             riegelNote: "Predictions far from the reference distance are less reliable.",
+            aboutFormulas: "About the formulas",
+            vdotDesc: "Performance index from the oxygen cost of the speed and the share of VO₂max sustainable for that duration; the same VDOT is assumed on every distance.",
         },
         fr: {
             appTitle: "Outil de course",
@@ -67,7 +69,7 @@ const I18n = (() => {
             kmCol: "Km",
             splitCol: "Split",
             totalCol: "Total",
-            predTitle: "Prédiction de temps (Riegel)",
+            predTitle: "Prédiction de temps par formule",
             predHelp: "Saisissez une performance récente pour estimer d'autres distances.",
             recentRace: "Performance récente",
             vmaTitle: "VMA",
@@ -97,6 +99,8 @@ const I18n = (() => {
             toLight: "Passer au thème clair",
             toDark: "Passer au thème sombre",
             riegelNote: "Les prédictions très éloignées de la distance de référence sont moins fiables.",
+            aboutFormulas: "À propos des formules",
+            vdotDesc: "Indice de performance calculé à partir du coût en oxygène de la vitesse et de la part de VO₂max tenable pour cette durée ; le même VDOT est supposé sur toutes les distances.",
         },
     };
 

@@ -95,6 +95,36 @@ const C = (() => {
         return t1 * Math.pow(km2 / km1, RIEGEL_EXPONENT);
     }
 
+    /** Cameron's formula: like Riegel, with a distance-dependent correction. */
+    function cameron(km1, t1, km2) {
+        const a = (km) => {
+            const m = km * 1000;
+            return 13.49681 - 0.000030363 * m + 835.7114 / Math.pow(m, 0.7905);
+        };
+        return t1 * (km2 / km1) * (a(km1) / a(km2));
+    }
+
+    /** Daniels & Gilbert VDOT: oxygen cost of the speed / fraction of VO2max held for that long. */
+    function vdot(km, seconds) {
+        const minutes = seconds / SECONDS_IN_MIN;
+        const speed = (km * 1000) / minutes; // m/min
+        const cost = -4.6 + 0.182258 * speed + 0.000104 * speed * speed;
+        const fraction = 0.8 + 0.1894393 * Math.exp(-0.012778 * minutes) + 0.2989558 * Math.exp(-0.1932605 * minutes);
+        return cost / fraction;
+    }
+
+    /** Time over `km` that gives the same VDOT (bisection: VDOT decreases as time grows). */
+    function timeAtVdot(value, km) {
+        let fast = km * SECONDS_IN_MIN; // 1:00 /km
+        let slow = km * SECONDS_IN_MIN * 30; // 30:00 /km
+        for (let i = 0; i < 60; i++) {
+            const mid = (fast + slow) / 2;
+            if (vdot(km, mid) > value) fast = mid;
+            else slow = mid;
+        }
+        return (fast + slow) / 2;
+    }
+
     /** Theoretical race times from a VMA (km/h). */
     function vmaPredictions(vma) {
         return RACES.map(({ id, km }) => {
@@ -135,5 +165,5 @@ const C = (() => {
         return rows;
     }
 
-    return { SECONDS_IN_MIN, SECONDS_IN_HOUR, KM_IN_MILE, RIEGEL_EXPONENT, RACES, VMA_RACE_RATIO, VMA_ZONES, HR_ZONES, parseNum, parseNumOrZero, toSeconds, splitHms, formatDuration, formatPace, paceToSpeed, speedToPace, timeFor, distanceFor, paceFor, kmToMiles, milesToKm, riegel, vmaPredictions, vmaZones, hrZones, splits };
+    return { SECONDS_IN_MIN, SECONDS_IN_HOUR, KM_IN_MILE, RIEGEL_EXPONENT, RACES, VMA_RACE_RATIO, VMA_ZONES, HR_ZONES, parseNum, parseNumOrZero, toSeconds, splitHms, formatDuration, formatPace, paceToSpeed, speedToPace, timeFor, distanceFor, paceFor, kmToMiles, milesToKm, riegel, cameron, vdot, timeAtVdot, vmaPredictions, vmaZones, hrZones, splits };
 })();

@@ -73,7 +73,7 @@
         </section>
 
         <section class="card" id="pred">
-            <h2 data-i18n="predTitle">Race prediction (Riegel)</h2>
+            <h2 data-i18n="predTitle">Race prediction by formula</h2>
             <p class="help" data-i18n="predHelp">Enter a recent performance to estimate other distances.</p>
 
             <label for="pDist" data-i18n="distance">Distance (km)</label>
@@ -96,7 +96,15 @@
             </fieldset>
 
             <table id="pResult"></table>
+            <p id="pVdot" class="result"></p>
             <p id="pNote" class="help" data-i18n="riegelNote" hidden>Predictions far from the reference distance are less reliable.</p>
+
+            <details>
+                <summary data-i18n="aboutFormulas">About the formulas</summary>
+                <p class="help"><strong>Riegel</strong> — T₂ = T₁ × (D₂ / D₁)<sup>1.06</sup></p>
+                <p class="help"><strong>Cameron</strong> — T₂ = T₁ × (D₂ / D₁) × a(D₁) / a(D₂), a(D) = 13.49681 − 0.000030363·D + 835.7114 / D<sup>0.7905</sup> (D in m)</p>
+                <p class="help"><strong>VDOT</strong> (Daniels &amp; Gilbert) — <span data-i18n="vdotDesc">Performance index from the oxygen cost of the speed and the share of VO₂max sustainable for that duration; the same VDOT is assumed on every distance.</span></p>
+            </details>
         </section>
 
         <section class="card" id="vmaCard">
